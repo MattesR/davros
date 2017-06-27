@@ -1,5 +1,7 @@
 /* jshint node: true */
 
+const davrosUrl = undefined;
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'davros',
@@ -19,14 +21,26 @@ module.exports = function(environment) {
 
     contentSecurityPolicy: {
       'default-src': "'none'",
-      'script-src': "'self'",
+      'script-src': "'self' 'unsafe-inline'",
       'font-src': "'self'",
-      'frame-src': "'self'",
+      'frame-src': "'self' *",
       'object-src': "'self'",
-      'connect-src': "'self' ws://localhost:*",
-      'img-src': "'self' data:",
+      'connect-src': "'self' * ws://localhost:*",
+      'img-src': "'self' * data:",
       'media-src': "'self'",
       'style-src': "'self' 'unsafe-inline'"
+    },
+
+    torii: {
+      sessionServiceName: 'session',
+      remoteServiceName: 'iframe',
+      providers: {
+        'liquid': {
+          redirectUri: (davrosUrl || 'http://localhost:4200') + '/torii/redirect.html',
+          clientId: 'TJjPpDHSGHY3RMRa1xYaQIa5R1LMbtf3cLatZnAm',
+          clientSecret: 'obNvbyuMe2LdHKTdITqKnjgQ9KQtW56PIKLpl8VL0AhYWebFSQSTwoHmar6cFvjHdU3hfBcoHOD8ycociHRFUacU867g6R4JroBxZyZhLGd3O8TYUorYVXIYBAN5TRJf',
+        },
+      }
     },
 
     APP: {

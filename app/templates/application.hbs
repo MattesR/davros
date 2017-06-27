@@ -1,9 +1,22 @@
 <div class="flex content-container">
-  <div class="flex layout-column" id="content">
-    {{outlet}}
+  {{#if signingIn}}
+  <div id="signin-modal-back">
+    <div id="signin-modal-frame">
+      <div id="signin-modal-content">
+        {{torii-iframe-placeholder}}
+      </div>
+    </div>
   </div>
+  {{/if}}
+    <div class="flex layout-column" id="content">
+      {{#if authenticated}}
+        {{outlet}}
+      {{else}}
+        {{partial "oauth-login"}}
+      {{/if}}
+    </div>
 
-  <div class="flex sidebar-small">
-    {{partial "sidebar"}}
-  </div>
+    <div class="flex sidebar-small">
+      {{partial "sidebar"}}
+    </div>
 </div>

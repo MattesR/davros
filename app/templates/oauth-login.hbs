@@ -1,0 +1,19 @@
+{{#title-bar}}
+  Please log in to access the files manager
+{{/title-bar}}
+
+{{#paper-content class="notfound" flex-layout="column" flex=true}}
+  <div class="huge">Not authorized</div>
+
+  <div class="description">
+    {{#if session.isWorking}}
+      One sec while we get you signed in...
+    {{else}}
+      {{#paper-button raised=true onClick=(action "signIn")}}
+        Sign in
+      {{/paper-button}}
+      <br>
+      {{error}}
+    {{/if}}
+  </div>
+{{/paper-content}}

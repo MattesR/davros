@@ -59,6 +59,7 @@
     "mock-socket": "^6.0.1",
     "pretender": "1.4.2",
     "supertest": "^2.0.1",
+    "torii": "^0.9.5",
     "xmldoc": "^0.5.1"
   },
   "dependencies": {
