@@ -42,6 +42,50 @@ This uses [ember-cli-vagrant-spk](https://github.com/mnutt/ember-cli-vagrant-spk
 * `ember build --environment production` (production, minified)
 * `vagrant-spk pack build/davros-v0.10.0`
 
+### OAuth
+
+Davros needs a valid OAuth provider. This will work in two ways:
+
+* use `ember s` from project root, in which case you need to modify the 
+  providers in `app/torii-providers` and `config/environment.js`
+* build a Docker container (see next section) and use environment variables 
+  `OAUTH_URL` and `DAVROS_URL`
+
+### Docker
+
+This Davros clone is able to run from a Docker container and provide access 
+only to OAuth authorized clients.
+
+First you need to build the image: from project's root, run
+`docker build -t <somenamespace>/davros .`
+
+When running the container, you can set these environment variables, or let 
+them fall back to their default values:
+
+```
+OAUTH_URL=http://localhost:8000
+DAVROS_URL=http://localhost:4200
+```
+
+Sample command:
+
+```
+docker run -d -p 8100:8000 -e OAUTH_URL=http://localhost:8000 -e DAVROS_URL=http://localhost:8100 --name davros nightsh/davros
+```
+
+The above will run Davros:
+
+* with OAuth support on local port 8100
+* authenticating against a local server on port 8000
+* in a detached container named `davros` (see with `docker ps`)
+* from the image built as `nightsh/davros`
+
+Note: `docker run` will trigger an `ember build` each time the container is 
+started, due to some `sed` operations going on in the Ember source files. This 
+is because the Davros server is always using the prebuilt Ember app. Don't 
+panic if you can't see anything in your browser after running – you can check 
+the container's logs to monitor when it's ready, e.g. `docker logs -f davros`
+
 ### Acknowledgements
 
 * Built on [Ember.js](https://emberjs.com).
