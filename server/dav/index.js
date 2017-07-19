@@ -1,6 +1,8 @@
 var fs = require('fs');
 var os = require('os');
 
+var storage                = require("node-persist");
+var request                = require("request");
 var jsDAV                  = require("jsDAV/lib/jsdav");
 var jsDAV_Server           = require("jsDAV/lib/DAV/server");
 var jsDAV_Util             = require("jsDAV/lib/shared/util");
@@ -13,9 +15,42 @@ var jsDAV_Locks_Backend_FS = require("jsDAV/lib/DAV/plugins/locks/fs");
 var statvfs = require('./statvfs-shim');
 fs.statvfs = statvfs;
 
+var oauthGateway = (process.env.OAUTH_HOST || 'http://localhost:8000');
+
+var validateToken = function(token) {
+  // FIXME use env vars
+  var requestOptions = {
+    url: `${oauthGateway}/accounts/profile`,
+    'auth': {
+      'bearer': token
+    }
+  };
+  return request.get(requestOptions, function(error, response, body) {
+    if(error) {
+      console.log(error);
+      return false;
+    }
+    if (response.statusCode === 200) {
+      return false;
+    } else {
+      return body;
+    }
+  });
+}
+
+var redirectToLogin = function(res, next) {
+  // Put in a header containing the OAuth login link and go 403
+  res.set({
+    'OauthURL': '/connect/default'
+  });
+  res.status(403);
+  return next();
+}
+
 exports.base = '/remote.php/webdav';
 
 exports.server = function(root) {
+
   console.log("Mounting webdav from data dir " + root);
 
   var tempDir = os.tmpdir();
@@ -43,7 +78,20 @@ exports.server = function(root) {
 
   return function(req, res, next) {
     if(req.url.indexOf(exports.base) === 0) {
-      server.emit('request', req, res);
+      // Init the storage
+      return storage.init()
+      .then(function() {
+        // Get the session's token
+        return storage.getItem(req.sessionID)
+        .then(function(token) {
+          if(token) {
+            validateToken(token) || redirectToLogin(res, next);
+            server.emit('request', req, res);
+          } else {
+            redirectToLogin(res, next);
+          }
+        });
+      });
     } else {
       next();
     }

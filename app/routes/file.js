@@ -4,12 +4,17 @@ import $ from 'jquery';
 import File from 'davros/models/file';
 import ensureCollectionExists from 'davros/lib/ensure-collection-exists';
 
-const { get, inject } = Ember;
+const { get, inject, Logger } = Ember;
 
 const socketUrl = ((document.location.protocol === 'https:') ? 'wss://' : 'ws://') + document.location.host;
 
 export default Ember.Route.extend({
   websockets: inject.service(),
+  queryParams: {
+    code: {
+      refreshModel: true
+    }
+  },
 
   init: function() {
     this._super.apply(this, arguments);
@@ -31,13 +36,47 @@ export default Ember.Route.extend({
   },
 
   model: function(params) {
+
     var id = params.path || '';
     var file = File.create({path: id});
-    return file.load();
+    var options = {};
+    if (params.code) {
+      options.code = params.code;
+    }
+
+    window.history.pushState(
+      "object or string",
+      "Title",
+      String(window.location).replace(/code=[^&\/]*&*/, '')
+    );
+
+    return file.load(options).then((res) => {
+        if (res instanceof Array && res[0] && res[0].nodeName === 'error') {
+          let errors = res.slice();
+          Logger.info('cloned errors', errors);
+          res = {
+            isError: true,
+            oauthURL: errors[0].querySelector('oauthURL').innerHTML,
+            errors
+          };
+        }
+        return res;
+    });
+
+
+  },
+
+  resetController(controller, isExiting) {
+    if (isExiting) {
+      // isExiting would be false if only the route's model was changing
+      controller.set('code', undefined);
+    }
   },
 
   renderTemplate: function() {
-    if(this.get('controller.model.isDirectory')) {
+    if(this.get('controller.model.isError')) {
+      this.render('unauthorized');
+    } else if(this.get('controller.model.isDirectory')) {
       this.render('directory');
     } else {
       this.render('file');

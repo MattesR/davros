@@ -1,20 +1,48 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
 
+const { Logger } = Ember;
 const propFindQuery = new Blob(['<?xml version="1.0" ?>\n<D:propfind xmlns:D="DAV:"><D:allprop/></D:propfind>'], {type: 'application/xml'});
 
 export default {
   base: '/remote.php/webdav',
 
-  propfind: function(path) {
+  propfind: function(path, options) {
+    if (!options) {
+      options = {};
+    }
     return fetch(path, {
       method: 'PROPFIND',
       contentType: 'application/xml',
+      headers: {
+        oauthCode: options.code || ''
+      },
       body: propFindQuery
     }).then(function(response) {
+      if (response.status === 403) {
+        var err = new Error('WebDAV access forbidden');
+        err.code = 403;
+
+        err.oauthURL = response.headers.map['oauthurl'][0];
+
+        throw err;
+      }
       return response.text();
+    }).catch(function(error) {
+      if (error.message === '403') {
+        Logger.info('Error link:', error.oauthURL);
+        return error.oauthURL;
+      } else {
+        Logger.error('WebDAV error: ', error);
+      }
+      return `<error><code>${error.code}</code>
+              <message>${error.message}</message>
+              <oauthURL>${error.oauthURL}</oauthURL>
+              </error>`;
     }).then(function(raw) {
       return Ember.$.parseXML(raw);
+    }).catch(function(error) {
+      Logger.error('XML parsing error: ', error);
     });
   },
 
@@ -28,7 +56,7 @@ export default {
     return fetch(path, {
       method: 'MKCOL'
     }).catch(function(err) {
-      console.error(err);
+      Logger.error(err);
     });
   }
 };

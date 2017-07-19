@@ -8,6 +8,8 @@ export default Ember.Service.extend({
   init: function() {
     fetch("/api/permissions").then((response) => {
       return response.json();
+    }).catch((err) => {
+      this.set('error', err);
     }).then((result) => {
       this.set('list', result.permissions);
     }).catch((err) => {

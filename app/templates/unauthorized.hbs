@@ -1,0 +1,18 @@
+{{#title-bar}}
+  Restricted access
+{{/title-bar}}
+
+{{#paper-content class="notfound" flex-layout="column" flex=true}}
+  <div class="huge">403 Forbidden</div>
+
+  <div class="description">
+    You are not authorized to view this page.
+    <br>
+    {{#paper-button
+      raised=true
+      onClick=(action "authorize" model.oauthURL)
+    }}
+      Log in
+    {{/paper-button}}
+  </div>
+{{/paper-content}}

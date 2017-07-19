@@ -1,6 +1,7 @@
 var exec = require('child-process-promise').exec;
 var path = require('path');
 var url  = require('url');
+var fs   = require('fs');
 
 var destination = '/var/www';
 var source = path.relative(path.dirname(destination), process.env.STORAGE_PATH || (__dirname + "/../data"));
@@ -22,6 +23,7 @@ exports.unpublish = function(req, res, next) {
 
 exports.getInfo = function(req, res, next) {
   var fsp = require('fs-promise');
+  var executable = "./sandstorm-integration/bin/getPublicId";
   let domain;
   fsp.readFile(domainFilePath, 'utf-8').then((domainData) => {
     domain = domainData;
@@ -30,7 +32,11 @@ exports.getInfo = function(req, res, next) {
   }).then((stat) => {
     if(stat) {
       var sessionId = req.headers['x-sandstorm-session-id'];
-      return exec("./sandstorm-integration/bin/getPublicId " + sessionId);
+    }
+    if (fs.existsSync(executable)) {
+      return exec(`${executable } ${sessionId}`);
+    } else {
+      return false;
     }
   }).then((result) => {
     if(result && result.stdout) {

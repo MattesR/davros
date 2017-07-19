@@ -24,5 +24,11 @@ export default Ember.Controller.extend(GalleryPlugin, {
 
   canEdit: function() {
     return this.get('permissions').can('edit');
-  }.property('permissions.list')
+  }.property('permissions.list'),
+
+  actions: {
+    authorize: function(oauthURL) {
+      window.location = oauthURL;
+    },
+  }
 });

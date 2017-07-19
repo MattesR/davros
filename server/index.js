@@ -13,8 +13,8 @@ var apiWs                = require('./api-ws');
 var changelog            = require('./changelog');
 var dav                  = require('./dav');
 var capabilities         = require('./dav/capabilities');
+var oauth                = require('./oauth');
 var publishing           = require('./publishing');
-var sandstormPermissions = require('./sandstorm_permissions');
 
 var thumbnail         = require('./api/thumbnail');
 var fileUpload        = require('./api/file-upload');
@@ -29,7 +29,6 @@ module.exports = function(app, options) {
   // Log proxy requests
   app.use(morgan('dev'));
 
-  app.use(sandstormPermissions);
 
   // WebDAV: /remote.php/webdav/*
   var davServer = dav.server(root);
@@ -46,6 +45,9 @@ module.exports = function(app, options) {
   app.get('/api/publish/info', publishing.getInfo);
   app.post('/api/publish',     publishing.publish);
   app.post('/api/unpublish',   publishing.unpublish);
+
+  // app.get('/oauth/connect',   oauth.connect);
+  app.get('/oauth/callback',  oauth.callback);
 
   app.get('/changelog', changelog);
 };

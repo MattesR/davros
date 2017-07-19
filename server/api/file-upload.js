@@ -1,7 +1,8 @@
-var multiparty        = require('multiparty');
+var multiparty = require('multiparty');
 
 module.exports = function(davServer) {
   return function(req, res, next) {
+    console.log('Uploading...', req.sessionID);
     var form = new multiparty.Form();
 
     // Unfortunately destination is sideloaded, so we have to extract it separately
@@ -18,6 +19,7 @@ module.exports = function(davServer) {
       if(destination[0] !== '/') { destination = '/' + destination; }
       part.url = '/remote.php/webdav' + destination;
       part.method = 'PUT';
+      part.sessionID = req.sessionID;
       davServer(part, res, next);
     });
 

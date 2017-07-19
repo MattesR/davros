@@ -22,3 +22,4 @@ testem.log
 /data/*
 /.jsdav
 /config/domain
+/.node-persist

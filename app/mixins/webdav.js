@@ -5,8 +5,15 @@ import jQuery from 'jquery';
 export default Ember.Mixin.create({
   davBase: Webdav.base,
 
-  load: function() {
-    return Webdav.propfind(this.get('rawPath')).then((xml) => {
+  load: function(params) {
+
+    return Webdav.propfind(this.get('rawPath'), params).then((xml) => {
+
+      let errors = jQuery.makeArray(xml.querySelectorAll('d\\:error, error'));
+      if (errors.length) {
+        return errors;
+      }
+
       let responses = jQuery.makeArray(xml.querySelectorAll('d\\:response, response'));
       let parsedResponses = responses.map(this.parseResponse.bind(this));
       parsedResponses.sort((a, b) => {
