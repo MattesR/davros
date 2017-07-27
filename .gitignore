@@ -15,6 +15,7 @@
 /coverage/*
 /libpeerconnection.log
 npm-debug.log*
+yarn-error.log
 testem.log
 /.cache-require-paths.json
 
@@ -23,3 +24,8 @@ testem.log
 /.jsdav
 /config/domain
 /.node-persist
+
+# ember-try
+.node_modules.ember-try/
+bower.json.ember-try
+package.json.ember-try

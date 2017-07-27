@@ -19,15 +19,22 @@ export default {
       },
       body: propFindQuery
     }).then(function(response) {
-      if (response.status === 403) {
+      if(response.status >= 200 && response.status < 400) {
+        return response.text();
+      } else if(response.status === 403) {
         var err = new Error('WebDAV access forbidden');
         err.code = 403;
 
         err.oauthURL = response.headers.map['oauthurl'][0];
 
         throw err;
+      } else {
+        if(response.status === 404) {
+          throw(new Error(`404 Not Found`));
+        } else {
+          throw(new Error(`${response.status} Error`));
+        }
       }
-      return response.text();
     }).catch(function(error) {
       if (error.message === '403') {
         Logger.info('Error link:', error.oauthURL);

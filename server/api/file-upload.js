@@ -14,6 +14,11 @@ module.exports = function(davServer) {
     });
 
     form.on('part', function(part) {
+      part.on('error', function(err) {
+        // something went wrong
+        console.log('part error');
+      });
+
       // part is already a readable stream, so make it look like a request and
       // just send it on to the dav server
       if(destination[0] !== '/') { destination = '/' + destination; }
@@ -21,6 +26,10 @@ module.exports = function(davServer) {
       part.method = 'PUT';
       part.sessionID = req.sessionID;
       davServer(part, res, next);
+    });
+
+    form.on('aborted', function() {
+      console.log('aborted');
     });
 
     form.on('error', function(err) {
