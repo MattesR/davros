@@ -15,6 +15,29 @@ Davros is built to run inside [Sandstorm](https://sandstorm.io), an open source 
 * [Set up Sandstorm](https://sandstorm.io/install/)
 * Download the [latest release](https://github.com/mnutt/davros/releases) and upload it to your Sandstorm server.
 
+## OAuth
+
+This fork features OAuth login with a custom provider for any requests to the WebDAV related endpoints of Davros.
+
+There are a few environment variables that handle this, as per this table:
+
+| Variable              | Default value             |
+|-----------------------|---------------------------|
+| `DAVROS_PORT`         | `3000`                    |
+| `DAVROS_PROTOCOL`     | `http`                    |
+| `OAUTH_HOST`          | `http://localhost:8000`   |
+| `OAUTH_AUTHORIZE_URL` | `$OAUTH_HOST/o/authorize` |
+| `OAUTH_ACCESS_URL`    | `$OAUTH_HOST/o/token`     |
+| `OAUTH_REDIRECT_URL`  | `/oauth/callback`         |
+| `OAUTH_KEY`           | ``                        |
+| `OAUTH_SECRET`        | ``                        |
+
+As you might notice, if your OAuth gateway aligns well with the defaults given, you will only need to set `OAUTH_KEY` and `OAUTH_SECRET` in order for this to work.
+
+As of now, the OAuth feature cannot be turned off. A switch for easy enabling/disabling authentication will be present in the future.
+
+For more about how authentication is handled, see the [authentication.md](./docs/authentication.md) file.
+
 ## Development
 
 Davros is built using Node.js and Ember.js. To run locally, you'll need to install node.js. Then:

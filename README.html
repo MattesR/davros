@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>README.html</title>
+
+</head>
+
+<body>
+
+<h1>Davros File Storage</h1>
+
+<p>Davros lets you store all of your files in the cloud and sync them between your devices.</p>
+
+<p><img src="/public/images/screenshot.png" alt="Screenshot of Davros" /></p>
+
+<p><a href="https://oasis.sandstorm.io/appdemo/8aspz4sfjnp8u89000mh2v1xrdyx97ytn8hq71mdzv4p4d8n0n3h"><img src="https://cdn.rawgit.com/mnutt/davros/master/public/images/try-live.svg" alt="Try Live Demo" /></a></p>
+
+<h2>Prerequisites</h2>
+
+<p>Davros is built to run inside <a href="https://sandstorm.io">Sandstorm</a>, an open source web application platform. You can either <a href="https://sandstorm.io/install/">run Sandstorm yourself</a> or <a href="https://oasis.sandstorm.io/">let someone else host it for you</a>.</p>
+
+<h2>Installation</h2>
+
+<ul>
+<li><a href="https://sandstorm.io/install/">Set up Sandstorm</a></li>
+<li>Download the <a href="https://github.com/mnutt/davros/releases">latest release</a> and upload it to your Sandstorm server.</li>
+</ul>
+
+<h2>OAuth support</h2>
+
+<p>This fork features OAuth login with a custom provider for any requests to the WebDAV related endpoints of Davros.</p>
+
+<p>There are a few environment variables that handle this, as per this table:</p>
+
+<p>| Variable | Default value |
+|-----------------------|---------------------------|
+| <code>DAVROS_PORT</code> | <code>3000</code> |
+| <code>DAVROS_PROTOCOL</code> | <code>http</code> |
+| <code>OAUTH_HOST</code> | <code>http://localhost:8000</code> |
+| <code>OAUTH_AUTHORIZE_URL</code> | <code>$OAUTH_HOST/o/authorize</code> |
+| <code>OAUTH_ACCESS_URL</code> | <code>$OAUTH_HOST/o/token</code> |
+| <code>OAUTH_REDIRECT_URL</code> | <code>/oauth/callback</code> |
+| <code>OAUTH_KEY</code> | <code>|
+| `OAUTH_SECRET`        |</code> |</p>
+
+<p>As you might notice, if your OAuth gateway aligns well with the defaults given, you will only need to set <code>OAUTH_KEY</code> and <code>OAUTH_SECRET</code> in order for this to work.</p>
+
+<p>As of now, the OAuth feature cannot be turned off. A switch for easy enabling/disabling authentication will be present in the future.</p>
+
+<p>For more about how authentication is handled, see the <a href="./docs/authentication.md">authentication.md</a> file.</p>
+
+<h2>Development</h2>
+
+<p>Davros is built using Node.js and Ember.js. To run locally, you'll need to install node.js. Then:</p>
+
+<ul>
+<li><code>npm install</code></li>
+<li><code>bower install</code></li>
+<li><code>PORT=3009 ember serve</code></li>
+</ul>
+
+<p>At this point you'll have Davros running at <code>http://localhost:3009</code>. Substitute <code>3009</code> for another port if you want. Note that running Davros this way is not particularly safe; it relies completely on Sandstorm for user management and authentication.</p>
+
+<p>In development, you can connect your desktop client to http://localhost:3009/ with any username and password.</p>
+
+<h2>Sandstorm Development</h2>
+
+<p>A few parts of Davros are dependent on running within Sandstorm, such as the authentication instructions on the Clients page. To run inside Sandstorm, first get <a href="https://github.com/sandstorm-io/vagrant-spk">vagrant-spk</a>. Then, within the Davros directory, run</p>
+
+<pre><code>vagrant-spk up
+ember spk
+</code></pre>
+
+<p>This uses <a href="https://github.com/mnutt/ember-cli-vagrant-spk">ember-cli-vagrant-spk</a> to automatically inject Davros into your local Sandstorm instance.</p>
+
+<h3>Building</h3>
+
+<ul>
+<li><code>ember build</code> (development)</li>
+<li><code>ember build --environment production</code> (production, minified)</li>
+<li><code>vagrant-spk pack build/davros-v0.10.0</code></li>
+</ul>
+
+<h3>Acknowledgements</h3>
+
+<ul>
+<li>Built on <a href="https://emberjs.com">Ember.js</a>.</li>
+<li>WebDAV support built with <a href="https://github.com/mikedeboer/jsDAV">jsDAV</a>.</li>
+</ul>
+
+<h3>License</h3>
+
+<p>See LICENSE file.</p>
+
+</body>
+</html>
