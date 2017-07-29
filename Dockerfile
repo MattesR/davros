@@ -11,6 +11,7 @@ COPY bower.json .
 RUN bower install --allow-root
 
 COPY . .
+RUN ember g ember-plupload
 RUN ember build
 
 ENV PORT 80
