@@ -13,7 +13,7 @@ var compression = require('compression');
 var root = __dirname;
 var indexFile = path.resolve(root + '/dist/index.html');
 
-var port = (process.env.DAVROS_PORT || '3000');
+var port = (process.env.PORT || '3000');
 var socket = process.env.SOCKET;
 var oauthGateway = (process.env.OAUTH_HOST || 'http://localhost:8000');
 
@@ -26,8 +26,8 @@ fs.access(indexFile, fs.constants.F_OK, function(err) {
 
 var grant = new Grant({
   'server': {
-    'protocol': (process.env.DAVROS_PROTOCOL || 'http'),
-    'host': (process.env.DAVROS_HOST || 'localhost') + `:${port}`,
+    'protocol': (process.env.PROTOCOL || 'http'),
+    'host': (process.env.HOST || 'localhost') + `:${port}`,
     'callback': '/oauth/callback',
     'transport': 'session',
     'state': true

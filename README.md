@@ -23,8 +23,9 @@ There are a few environment variables that handle this, as per this table:
 
 | Variable              | Default value             |
 |-----------------------|---------------------------|
-| `DAVROS_PORT`         | `3000`                    |
-| `DAVROS_PROTOCOL`     | `http`                    |
+| `PORT`                | `3000`                    |
+| `PROTOCOL`            | `http`                    |
+| `HOST`                | `localhost`               |
 | `OAUTH_HOST`          | `http://localhost:8000`   |
 | `OAUTH_AUTHORIZE_URL` | `$OAUTH_HOST/o/authorize` |
 | `OAUTH_ACCESS_URL`    | `$OAUTH_HOST/o/token`     |
@@ -37,6 +38,33 @@ As you might notice, if your OAuth gateway aligns well with the defaults given, 
 As of now, the OAuth feature cannot be turned off. A switch for easy enabling/disabling authentication will be present in the future.
 
 For more about how authentication is handled, see the [authentication.md](./docs/authentication.md) file.
+
+## Docker
+
+Here are some quick, copy-paste friendly, examples of how to build an image and spin a Davros container.
+
+```
+$ docker build liquidinvestigations/davros .
+$ docker run -d --name davros liquidinvestigations/davros
+```
+
+When running the container, you can set all the environment variables listed in the above table, or let them fall back to their default values.
+
+Another thing you might be needing is to mount the data directory as a volume. To do this, simply point any resource you want at the `/davros/data` directory of the container. Here's an updated, more complete command with a volume and env vars:
+
+```
+$ docker run -d \
+-p 8080:80 \
+-v /host/path:/davros/data \
+-e PORT=80 \
+-e OAUTH_HOST=172.16.0.2 \
+-e OAUTH_KEY=somekeyforyouoauthclient \
+-e OAUTH_SECRET=hereisthesecretyouwillneverfind \
+--name davros \
+liquidinvestigations/davros
+```
+
+Of course, if you use something like docker-compose, you can link containers and use local name resolution, data containers etc. 
 
 ## Development
 
