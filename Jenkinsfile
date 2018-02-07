@@ -18,7 +18,7 @@ node('cloud') {
             sh 'factory/factory run --smp 2 --memory 2048 --share .:/mnt/davros /mnt/davros/build-production-dist.sh'
         }
         stage('Archive') {
-            sh 'tar -zcvf davros-dist.tar.gz dist build node_modules bower_components'
+            sh 'tar -zcvf davros-dist.tar.gz dist node_modules bower_components'
             archiveArtifacts 'davros-dist.tar.gz'
         }
     } finally {

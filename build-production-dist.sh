@@ -16,4 +16,4 @@ npm install
 ./node_modules/bower/bin/bower --no-color --allow-root install
 ./node_modules/ember-cli/bin/ember build
 
-cp -a --no-preserve=ownership dist build node_modules bower_components /mnt/davros
+cp -a --no-preserve=ownership dist node_modules bower_components /mnt/davros
